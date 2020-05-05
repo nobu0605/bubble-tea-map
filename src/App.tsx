@@ -1,6 +1,6 @@
-import React from 'react'
-import { MyMapComponent } from './components/map'
-import PersistentDrawerLeft from './components/drawer'
+import React from "react";
+import MyMapComponent from "./components/map";
+import PersistentDrawerLeft from "./components/drawer";
 
 function App() {
   return (
@@ -8,7 +8,7 @@ function App() {
       <MyMapComponent isMarkerShown />
       <PersistentDrawerLeft />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -22,7 +22,8 @@ const shops = [
   { shopObj: GongCha, icon: null, companyName: "GongCha" },
   { shopObj: ChunShuiTang, icon: icons30, companyName: "ChunShuiTang" },
 ];
-
+let key = process.env.PORT;
+console.log(key);
 export default class MyMapComponent extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);

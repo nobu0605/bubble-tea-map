@@ -22,7 +22,7 @@ const shops = [
   { shopObj: GongCha, icon: null, companyName: "GongCha" },
   { shopObj: ChunShuiTang, icon: icons30, companyName: "ChunShuiTang" },
 ];
-let key = process.env.PORT;
+let key = process.env.NODE_ENV;
 console.log(key);
 export default class MyMapComponent extends React.Component<Props, State> {
   constructor(props: Props) {

@@ -18,16 +18,16 @@ type Props = any;
 type State = any;
 
 const shops = [
-  { shopObj: chatime, icon: iconsMarker },
-  { shopObj: GongCha, icon: null },
-  { shopObj: ChunShuiTang, icon: icons30 },
+  { shopObj: chatime, icon: iconsMarker, companyName: "chatime" },
+  { shopObj: GongCha, icon: null, companyName: "GongCha" },
+  { shopObj: ChunShuiTang, icon: icons30, companyName: "ChunShuiTang" },
 ];
 
 export default class MyMapComponent extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      showingInfoWindow: false,
+      isShowInfoWindow: false,
       activeMarker: 0,
       selectedPlace: {},
     };
@@ -37,7 +37,7 @@ export default class MyMapComponent extends React.Component<Props, State> {
     this.setState({
       selectedPlace: props,
       activeMarker: selected,
-      showingInfoWindow: true,
+      isShowInfoWindow: true,
     });
   }
 
@@ -54,7 +54,7 @@ export default class MyMapComponent extends React.Component<Props, State> {
     )((props: any) => (
       <div>
         <GoogleMap
-          defaultZoom={5}
+          defaultZoom={10}
           defaultCenter={{ lat: 35.6970463, lng: 139.7004277 }}
         >
           {this.props.isMarkerShown &&
@@ -68,7 +68,8 @@ export default class MyMapComponent extends React.Component<Props, State> {
                       icon={shop.icon}
                     >
                       {index === this.state.activeMarker &&
-                        this.state.showingInfoWindow && (
+                        this.state.isShowInfoWindow &&
+                        shop.companyName === "ChunShuiTang" && (
                           <InfoWindow>
                             <div>
                               <b>

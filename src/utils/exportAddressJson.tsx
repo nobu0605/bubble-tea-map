@@ -11,7 +11,7 @@ Geocode.setRegion("es");
 // Enable or disable logs. Its optional.
 Geocode.enableDebug();
 
-type Array = [
+type shopArray = [
   {
     shop_name: string;
     address: string;
@@ -20,23 +20,25 @@ type Array = [
   }
 ];
 
-let Array: Array = [{ shop_name: "string", address: "string", lat: 0, lng: 0 }];
+let shopArray: shopArray = [
+  { shop_name: "string", address: "string", lat: 0, lng: 0 },
+];
 
-export async function getAddress(Array: Array, chatime: Array) {
+export async function getAddress(shopData: any) {
   // Get latitude & longitude from address.
-  for (let index = 0; index < chatime.length; index++) {
-    await Geocode.fromAddress(chatime[index].shop_name).then(
+  for (let index = 0; index < shopData.length; index++) {
+    await Geocode.fromAddress(shopData[index].shop_name).then(
       (response) => {
-        Array[index] = response.results[0].geometry.location;
-        Array[index].shop_name = chatime[index].shop_name;
-        Array[index].address = chatime[index].address;
+        shopArray[index] = response.results[0].geometry.location;
+        shopArray[index].shop_name = shopData[index].shop_name;
+        shopArray[index].address = shopData[index].address;
       },
       (error) => {
         console.error(error);
       }
     );
   }
-  exportToJson(Array);
+  exportToJson(shopArray);
 }
 
 export function exportToJson(objectData: Object) {

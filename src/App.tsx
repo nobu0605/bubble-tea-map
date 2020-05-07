@@ -1,12 +1,10 @@
 import React from "react";
-import MyMapComponent from "./components/map";
-import PersistentDrawerLeft from "./components/drawer";
+import BubbleTeaMap from "./pages/BubbleTeaMap";
 
 function App() {
   return (
     <div className="App">
-      <MyMapComponent isMarkerShown />
-      <PersistentDrawerLeft />
+      <BubbleTeaMap />
     </div>
   );
 }

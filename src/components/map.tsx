@@ -7,38 +7,42 @@ import {
   Marker,
   InfoWindow,
 } from "react-google-maps";
-import chatime from "../shopData/chatime.json";
-import GongCha from "../shopData/GongCha.json";
-import ChunShuiTang from "../shopData/ChunShuiTang.json";
 import { apiKey } from "../config";
-import iconsMarker from "../images/iconsMarker.png";
-import icons30 from "../images/icons30.png";
+import { shops } from "../constants/shops";
 
 type Props = any;
 type State = any;
 
-const shops = [
-  { shopObj: chatime, icon: iconsMarker, companyName: "chatime" },
-  { shopObj: GongCha, icon: null, companyName: "GongCha" },
-  { shopObj: ChunShuiTang, icon: icons30, companyName: "ChunShuiTang" },
-];
-let key = process.env.NODE_ENV;
-console.log(key);
-export default class MyMapComponent extends React.Component<Props, State> {
+const initialLat: number = 35.601236;
+const initialLng: number = 139.767125;
+const adjustLatitude: number = 0.05;
+
+export default class Map extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
       isShowInfoWindow: false,
       activeMarker: 0,
       selectedPlace: {},
+      lat: initialLat,
+      lng: initialLng,
     };
   }
 
-  onMarkerClick(props: any, selected: number, e: any) {
+  onMarkerClick(
+    props: any,
+    selected: number,
+    companyName: string,
+    lat: number,
+    lng: number
+  ) {
     this.setState({
       selectedPlace: props,
       activeMarker: selected,
+      companyName: companyName,
       isShowInfoWindow: true,
+      lat: lat - adjustLatitude,
+      lng: lng,
     });
   }
 
@@ -47,7 +51,7 @@ export default class MyMapComponent extends React.Component<Props, State> {
       withProps({
         googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${apiKey}`,
         loadingElement: <div style={{ height: `100%` }} />,
-        containerElement: <div style={{ height: `1200px` }} />,
+        containerElement: <div style={{ height: `700px` }} />,
         mapElement: <div style={{ height: `100%` }} />,
       }),
       withScriptjs,
@@ -56,36 +60,49 @@ export default class MyMapComponent extends React.Component<Props, State> {
       <div>
         <GoogleMap
           defaultZoom={10}
-          defaultCenter={{ lat: 35.6970463, lng: 139.7004277 }}
+          defaultCenter={{ lat: initialLat, lng: initialLng }}
+          center={{ lat: this.state.lat, lng: this.state.lng }}
         >
-          {this.props.isMarkerShown &&
-            shops.map((shop: any) => {
-              return shop.shopObj.map((shopData: any, index: number) => {
-                return (
-                  <div>
-                    <Marker
-                      position={{ lat: shopData.lat, lng: shopData.lng }}
-                      onClick={(e) => this.onMarkerClick(this.props, index, e)}
-                      icon={shop.icon}
-                    >
-                      {index === this.state.activeMarker &&
-                        this.state.isShowInfoWindow &&
-                        shop.companyName === "ChunShuiTang" && (
-                          <InfoWindow>
-                            <div>
-                              <b>
-                                <span>{shopData.shop_name}</span>
-                              </b>
-                              <br />
-                              <span>{shopData.address}</span>
-                            </div>
-                          </InfoWindow>
-                        )}
-                    </Marker>
-                  </div>
-                );
-              });
-            })}
+          {shops.map((shop: any) => {
+            return shop.shopObj.map((shopData: any, index: number) => {
+              return (
+                <Marker
+                  position={{ lat: shopData.lat, lng: shopData.lng }}
+                  onClick={(e) =>
+                    this.onMarkerClick(
+                      this.props,
+                      index,
+                      shop.companyName,
+                      shopData.lat,
+                      shopData.lng
+                    )
+                  }
+                  visible={
+                    this.props.filteredShops === "All shops" ||
+                    (this.props.filteredShops !== "All shops" &&
+                      this.props.filteredShops === shop.companyName)
+                      ? true
+                      : false
+                  }
+                  icon={shop.icon}
+                >
+                  {index === this.state.activeMarker &&
+                    this.state.isShowInfoWindow &&
+                    this.state.companyName === shop.companyName && (
+                      <InfoWindow>
+                        <div>
+                          <b>
+                            <span>{shopData.shop_name}</span>
+                          </b>
+                          <br />
+                          <span>{shopData.address}</span>
+                        </div>
+                      </InfoWindow>
+                    )}
+                </Marker>
+              );
+            });
+          })}
         </GoogleMap>
       </div>
     ));

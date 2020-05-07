@@ -20,8 +20,8 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
+import Icon from "@material-ui/core/Icon";
+import { shops } from "../constants/shops";
 
 const drawerWidth = 240;
 
@@ -60,9 +60,7 @@ const useStyles = makeStyles((theme: Theme) =>
     drawerHeader: {
       display: "flex",
       alignItems: "center",
-      padding: theme.spacing(0, 1),
-      // necessary for content to be below app bar
-      ...theme.mixins.toolbar,
+      padding: `calc(0.55%)`,
       justifyContent: "flex-end",
     },
     content: {
@@ -84,7 +82,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function PersistentDrawerLeft() {
+export default function PersistentDrawerLeft(props: any) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -141,26 +139,29 @@ export default function PersistentDrawerLeft() {
         </div>
         <Divider />
         <List>
-          {["ChaTime", "Gong cha", "春水堂"].map((text, index) => (
-            <ListItem button key={text}>
+          {["All shops", "ChaTime", "Gong cha", "春水堂"].map((text, index) => (
+            <ListItem
+              button
+              onClick={() => props.filteredShops(shops[index].companyName)}
+              key={text}
+            >
               <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                <Icon>
+                  <img
+                    src={shops[index].icon}
+                    alt="GongChaIcon"
+                    width={25}
+                    height={25}
+                  />
+                </Icon>
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText
+                primary={`${text} : ${shops[index].numberOfShops} shops`}
+              />
             </ListItem>
           ))}
         </List>
         <Divider />
-        {/* <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List> */}
       </Drawer>
       <main
         className={clsx(classes.content, {

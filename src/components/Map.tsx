@@ -6,9 +6,14 @@ import {
   GoogleMap,
   Marker,
   InfoWindow,
+  Circle,
 } from "react-google-maps";
 import { apiKey } from "../config";
 import { shops } from "../constants/shops";
+import currentLocation from "../images/currentLocation.png";
+import Fab from "@material-ui/core/Fab";
+import Icon from "@material-ui/core/Icon";
+import NavigationIcon from "@material-ui/icons/Navigation";
 
 type Props = any;
 type State = any;
@@ -26,7 +31,14 @@ export default class Map extends React.Component<Props, State> {
       selectedPlace: {},
       lat: initialLat,
       lng: initialLng,
+      isShowCurrentLocation: true,
     };
+  }
+
+  onCurrentButtonClick() {
+    this.setState({
+      isShowCurrentLocation: !this.state.isShowCurrentLocation,
+    });
   }
 
   onMarkerClick(
@@ -44,6 +56,20 @@ export default class Map extends React.Component<Props, State> {
       lat: lat - adjustLatitude,
       lng: lng,
     });
+  }
+
+  componentDidMount() {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        this.setState({
+          currentLocationLat: position.coords.latitude,
+          currentLocationLng: position.coords.longitude,
+          error: null,
+        });
+      },
+      (error) => this.setState({ error: error.message }),
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    );
   }
 
   render() {
@@ -103,6 +129,38 @@ export default class Map extends React.Component<Props, State> {
               );
             });
           })}
+          <Marker
+            icon={currentLocation}
+            title={"Current Location"}
+            position={{
+              lat: this.state.currentLocationLat,
+              lng: this.state.currentLocationLng,
+            }}
+            visible={this.state.isShowCurrentLocation}
+          />
+          <Circle
+            defaultCenter={{
+              lat: parseFloat(this.state.currentLocationLat),
+              lng: parseFloat(this.state.currentLocationLng),
+            }}
+            visible={this.state.isShowCurrentLocation}
+            radius={5000}
+            options={{
+              strokeColor: "#0000FF",
+              strokeOpacity: 0.2,
+              strokeWeight: 2,
+              fillColor: "#0000FF",
+              fillOpacity: 0.2,
+            }}
+          />
+          <Fab
+            style={{ position: "fixed", bottom: 40, left: 20 }}
+            color="primary"
+            aria-label="add"
+            onClick={() => this.onCurrentButtonClick()}
+          >
+            <NavigationIcon></NavigationIcon>
+          </Fab>
         </GoogleMap>
       </div>
     ));

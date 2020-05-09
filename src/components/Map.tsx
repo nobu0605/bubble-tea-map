@@ -12,7 +12,6 @@ import { apiKey } from "../config";
 import { shops } from "../constants/shops";
 import currentLocation from "../images/currentLocation.png";
 import Fab from "@material-ui/core/Fab";
-import Icon from "@material-ui/core/Icon";
 import NavigationIcon from "@material-ui/icons/Navigation";
 
 type Props = any;
@@ -26,12 +25,14 @@ export default class Map extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      isShowInfoWindow: false,
-      activeMarker: 0,
+      isShowInfoWindow: true,
+      activeMarker: 1,
       selectedPlace: {},
+      companyName: "All-shops",
       lat: initialLat,
       lng: initialLng,
       isShowCurrentLocation: true,
+      filteredShops: props.filteredShops,
     };
   }
 
@@ -41,15 +42,13 @@ export default class Map extends React.Component<Props, State> {
     });
   }
 
-  onMarkerClick(
-    props: any,
+  showSelectedShop(
     selected: number,
     companyName: string,
     lat: number,
     lng: number
   ) {
     this.setState({
-      selectedPlace: props,
       activeMarker: selected,
       companyName: companyName,
       isShowInfoWindow: true,
@@ -59,6 +58,19 @@ export default class Map extends React.Component<Props, State> {
   }
 
   componentDidMount() {
+    if (this.props.params.companyName) {
+      this.setState({
+        filteredShops: this.props.params.companyName,
+      });
+    }
+    if (this.props.params.shopId) {
+      this.setState({
+        activeMarker: Number(this.props.params.shopId),
+        isShowInfoWindow: true,
+        companyName: this.props.params.companyName,
+      });
+    }
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
         this.setState({
@@ -93,10 +105,10 @@ export default class Map extends React.Component<Props, State> {
             return shop.shopObj.map((shopData: any, index: number) => {
               return (
                 <Marker
+                  key={index}
                   position={{ lat: shopData.lat, lng: shopData.lng }}
                   onClick={(e) =>
-                    this.onMarkerClick(
-                      this.props,
+                    this.showSelectedShop(
                       index,
                       shop.companyName,
                       shopData.lat,
@@ -104,9 +116,9 @@ export default class Map extends React.Component<Props, State> {
                     )
                   }
                   visible={
-                    this.props.filteredShops === "All shops" ||
-                    (this.props.filteredShops !== "All shops" &&
-                      this.props.filteredShops === shop.companyName)
+                    this.state.filteredShops === "All-shops" ||
+                    (this.state.filteredShops !== "All-shops" &&
+                      this.state.filteredShops === shop.companyName)
                       ? true
                       : false
                   }
@@ -115,7 +127,7 @@ export default class Map extends React.Component<Props, State> {
                   {index === this.state.activeMarker &&
                     this.state.isShowInfoWindow &&
                     this.state.companyName === shop.companyName && (
-                      <InfoWindow>
+                      <InfoWindow defaultZIndex={1}>
                         <div>
                           <b>
                             <span>{shopData.shop_name}</span>

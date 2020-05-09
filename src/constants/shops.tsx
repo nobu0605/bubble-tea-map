@@ -10,7 +10,7 @@ export const shops = [
   {
     shopObj: [],
     icon: commerce,
-    companyName: "All shops",
+    companyName: "All-shops",
     numberOfShops: chatime.length + GongCha.length + ChunShuiTang.length,
   },
   {

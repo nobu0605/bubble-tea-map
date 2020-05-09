@@ -14,8 +14,28 @@ import currentLocation from "../images/currentLocation.png";
 import Fab from "@material-ui/core/Fab";
 import NavigationIcon from "@material-ui/icons/Navigation";
 
-type Props = any;
-type State = any;
+type Props = {
+  filteredShop: string;
+  isMarkerShown: boolean;
+  params: {
+    companyName: string;
+    shopId: number;
+  };
+};
+
+type State = {
+  isShowInfoWindow: boolean;
+  activeMarker: number;
+  selectedPlace: object;
+  companyName: string;
+  lat: number;
+  lng: number;
+  isShowCurrentLocation: boolean;
+  filteredShop: string;
+  currentLocationLng: number;
+  currentLocationLat: number;
+  error: null | string;
+};
 
 const initialLat: number = 35.601236;
 const initialLng: number = 139.767125;
@@ -32,7 +52,10 @@ export default class Map extends React.Component<Props, State> {
       lat: initialLat,
       lng: initialLng,
       isShowCurrentLocation: true,
-      filteredShops: props.filteredShops,
+      filteredShop: props.filteredShop,
+      currentLocationLng: 0,
+      currentLocationLat: 0,
+      error: null,
     };
   }
 
@@ -60,7 +83,7 @@ export default class Map extends React.Component<Props, State> {
   componentDidMount() {
     if (this.props.params.companyName) {
       this.setState({
-        filteredShops: this.props.params.companyName,
+        filteredShop: this.props.params.companyName,
       });
     }
     if (this.props.params.shopId) {
@@ -82,10 +105,11 @@ export default class Map extends React.Component<Props, State> {
       (error) => this.setState({ error: error.message }),
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
     );
+    console.error(this.state.error);
   }
 
   render() {
-    const MyMapComponent: any = compose(
+    const MyMapComponent: Function = compose(
       withProps({
         googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${apiKey}`,
         loadingElement: <div style={{ height: `100%` }} />,
@@ -94,15 +118,15 @@ export default class Map extends React.Component<Props, State> {
       }),
       withScriptjs,
       withGoogleMap
-    )((props: any) => (
+    )(() => (
       <div>
         <GoogleMap
           defaultZoom={10}
           defaultCenter={{ lat: initialLat, lng: initialLng }}
           center={{ lat: this.state.lat, lng: this.state.lng }}
         >
-          {shops.map((shop: any) => {
-            return shop.shopObj.map((shopData: any, index: number) => {
+          {shops.map((shop) => {
+            return shop.shopObj.map((shopData, index: number) => {
               return (
                 <Marker
                   key={index}
@@ -116,9 +140,9 @@ export default class Map extends React.Component<Props, State> {
                     )
                   }
                   visible={
-                    this.state.filteredShops === "All-shops" ||
-                    (this.state.filteredShops !== "All-shops" &&
-                      this.state.filteredShops === shop.companyName)
+                    this.state.filteredShop === "All-shops" ||
+                    (this.state.filteredShop !== "All-shops" &&
+                      this.state.filteredShop === shop.companyName)
                       ? true
                       : false
                   }
@@ -152,8 +176,8 @@ export default class Map extends React.Component<Props, State> {
           />
           <Circle
             defaultCenter={{
-              lat: parseFloat(this.state.currentLocationLat),
-              lng: parseFloat(this.state.currentLocationLng),
+              lat: this.state.currentLocationLat,
+              lng: this.state.currentLocationLng,
             }}
             visible={this.state.isShowCurrentLocation}
             radius={5000}

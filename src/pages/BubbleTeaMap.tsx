@@ -2,8 +2,17 @@ import React from "react";
 import Map from "../components/Map";
 import PersistentDrawerLeft from "../components/Drawer";
 
-type Props = any;
-type State = any;
+type Props = {
+  isMarkerShown: boolean;
+  filteredShop: string;
+  match: {
+    params: {
+      companyName: string;
+      shopId: number;
+    };
+  };
+};
+type State = { filteredShop: string };
 
 export default class BubbleTeaMap extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -12,13 +21,13 @@ export default class BubbleTeaMap extends React.Component<Props, State> {
       filteredShop: "All-shops",
     };
   }
-  filteredShops = (selectedShop: string) => {
+  filteredShop = (selectedShop: string) => {
     this.setState({
       filteredShop: selectedShop,
     });
     if (this.props.match.params.companyName) {
       this.setState({
-        filteredShops: this.props.match.params.companyName,
+        filteredShop: this.props.match.params.companyName,
       });
     }
   };
@@ -26,11 +35,11 @@ export default class BubbleTeaMap extends React.Component<Props, State> {
   render() {
     return (
       <div className="bubbleTeaMap">
-        <PersistentDrawerLeft filteredShops={this.filteredShops} />
+        <PersistentDrawerLeft />
         <Map
           isMarkerShown
           params={this.props.match.params}
-          filteredShops={this.state.filteredShop}
+          filteredShop={this.state.filteredShop}
         />
       </div>
     );

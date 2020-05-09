@@ -24,7 +24,14 @@ const useStyles = makeStyles({
   },
 });
 
-export default function SimpleCard(props: any) {
+type Props = {
+  address: string;
+  companyName: string;
+  index: number;
+  shopName: string;
+};
+
+export default function SimpleCard(props: Props) {
   const classes = useStyles();
   const { shopName, address, index, companyName } = props;
 

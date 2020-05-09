@@ -84,7 +84,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function PersistentDrawerLeft(props: any) {
+export default function PersistentDrawerLeft() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -116,8 +116,21 @@ export default function PersistentDrawerLeft(props: any) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
-            Bubble Tea Map
+          <Typography
+            style={{ fontSize: 20, fontFamily: "Merienda One" }}
+            variant="h6"
+            noWrap
+          >
+            <Link
+              style={{
+                color: "white",
+                textDecoration: "none",
+                display: "block",
+              }}
+              to="/"
+            >
+              Bubble Tea Map
+            </Link>
           </Typography>
         </Toolbar>
       </AppBar>
@@ -152,10 +165,7 @@ export default function PersistentDrawerLeft(props: any) {
                 pathname: `/${shops[index].companyName}`,
               }}
             >
-              <ListItem
-                button
-                // onClick={() => props.filteredShops(shops[index].companyName)}
-              >
+              <ListItem button>
                 <ListItemIcon>
                   <Icon>
                     <img

@@ -51,7 +51,7 @@ export default class Map extends React.Component<Props, State> {
       companyName: "All-shops",
       lat: initialLat,
       lng: initialLng,
-      isShowCurrentLocation: true,
+      isShowCurrentLocation: false,
       filteredShop: props.filteredShop,
       currentLocationLng: 0,
       currentLocationLat: 0,
@@ -60,9 +60,19 @@ export default class Map extends React.Component<Props, State> {
   }
 
   onCurrentButtonClick() {
-    this.setState({
-      isShowCurrentLocation: !this.state.isShowCurrentLocation,
-    });
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        this.setState({
+          currentLocationLat: position.coords.latitude,
+          currentLocationLng: position.coords.longitude,
+          isShowCurrentLocation: !this.state.isShowCurrentLocation,
+          error: null,
+        });
+      },
+      (error) => this.setState({ error: error.message }),
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    );
+    console.error(this.state.error);
   }
 
   showSelectedShop(
@@ -93,19 +103,6 @@ export default class Map extends React.Component<Props, State> {
         companyName: this.props.params.companyName,
       });
     }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        this.setState({
-          currentLocationLat: position.coords.latitude,
-          currentLocationLng: position.coords.longitude,
-          error: null,
-        });
-      },
-      (error) => this.setState({ error: error.message }),
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-    );
-    console.error(this.state.error);
   }
 
   render() {
@@ -113,7 +110,7 @@ export default class Map extends React.Component<Props, State> {
       withProps({
         googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${apiKey}`,
         loadingElement: <div style={{ height: `100%` }} />,
-        containerElement: <div style={{ height: `700px` }} />,
+        containerElement: <div style={{ height: `800px` }} />,
         mapElement: <div style={{ height: `100%` }} />,
       }),
       withScriptjs,

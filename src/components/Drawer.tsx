@@ -22,6 +22,8 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import Icon from "@material-ui/core/Icon";
 import { shops } from "../constants/shops";
+import { Link } from "react-router-dom";
+import Button from "@material-ui/core/Button";
 
 const drawerWidth = 240;
 
@@ -82,7 +84,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function PersistentDrawerLeft(props: any) {
+export default function PersistentDrawerLeft() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -114,8 +116,21 @@ export default function PersistentDrawerLeft(props: any) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
-            Bubble Tea Map
+          <Typography
+            style={{ fontSize: 20, fontFamily: "Merienda One" }}
+            variant="h6"
+            noWrap
+          >
+            <Link
+              style={{
+                color: "white",
+                textDecoration: "none",
+                display: "block",
+              }}
+              to="/"
+            >
+              Bubble Tea Map
+            </Link>
           </Typography>
         </Toolbar>
       </AppBar>
@@ -139,29 +154,63 @@ export default function PersistentDrawerLeft(props: any) {
         </div>
         <Divider />
         <List>
-          {["All shops", "ChaTime", "Gong cha", "春水堂"].map((text, index) => (
-            <ListItem
-              button
-              onClick={() => props.filteredShops(shops[index].companyName)}
-              key={text}
+          {["All-shops", "ChaTime", "Gong cha", "春水堂"].map((text, index) => (
+            <Link
+              key={index}
+              style={{
+                color: "black",
+                textDecoration: "none",
+              }}
+              to={{
+                pathname: `/${shops[index].companyName}`,
+              }}
             >
-              <ListItemIcon>
-                <Icon>
-                  <img
-                    src={shops[index].icon}
-                    alt="GongChaIcon"
-                    width={25}
-                    height={25}
-                  />
-                </Icon>
-              </ListItemIcon>
-              <ListItemText
-                primary={`${text} : ${shops[index].numberOfShops} shops`}
-              />
-            </ListItem>
+              <ListItem button>
+                <ListItemIcon>
+                  <Icon>
+                    <img
+                      src={shops[index].icon}
+                      alt={`${shops[index].companyName}`}
+                      width={25}
+                      height={25}
+                    />
+                  </Icon>
+                </ListItemIcon>
+                <ListItemText
+                  primary={`${text} : ${shops[index].numberOfShops} shops`}
+                />
+              </ListItem>
+            </Link>
           ))}
         </List>
         <Divider />
+        <List>
+          <ListItem
+            style={{
+              display: "block",
+            }}
+          >
+            <Link
+              style={{
+                color: "black",
+                textDecoration: "none",
+                display: "block",
+              }}
+              to="/shopList"
+            >
+              <Button
+                style={{
+                  paddingLeft: 42,
+                  paddingRight: 42,
+                }}
+                variant="contained"
+                color="primary"
+              >
+                Go To Shop List
+              </Button>
+            </Link>
+          </ListItem>
+        </List>
       </Drawer>
       <main
         className={clsx(classes.content, {

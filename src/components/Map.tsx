@@ -12,11 +12,30 @@ import { apiKey } from "../config";
 import { shops } from "../constants/shops";
 import currentLocation from "../images/currentLocation.png";
 import Fab from "@material-ui/core/Fab";
-import Icon from "@material-ui/core/Icon";
 import NavigationIcon from "@material-ui/icons/Navigation";
 
-type Props = any;
-type State = any;
+type Props = {
+  filteredShop: string;
+  isMarkerShown: boolean;
+  params: {
+    companyName: string;
+    shopId: number;
+  };
+};
+
+type State = {
+  isShowInfoWindow: boolean;
+  activeMarker: number;
+  selectedPlace: object;
+  companyName: string;
+  lat: number;
+  lng: number;
+  isShowCurrentLocation: boolean;
+  filteredShop: string;
+  currentLocationLng: number;
+  currentLocationLat: number;
+  error: null | string;
+};
 
 const initialLat: number = 35.601236;
 const initialLng: number = 139.767125;
@@ -26,12 +45,17 @@ export default class Map extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      isShowInfoWindow: false,
-      activeMarker: 0,
+      isShowInfoWindow: true,
+      activeMarker: 1,
       selectedPlace: {},
+      companyName: "All-shops",
       lat: initialLat,
       lng: initialLng,
       isShowCurrentLocation: true,
+      filteredShop: props.filteredShop,
+      currentLocationLng: 0,
+      currentLocationLat: 0,
+      error: null,
     };
   }
 
@@ -41,15 +65,13 @@ export default class Map extends React.Component<Props, State> {
     });
   }
 
-  onMarkerClick(
-    props: any,
+  showSelectedShop(
     selected: number,
     companyName: string,
     lat: number,
     lng: number
   ) {
     this.setState({
-      selectedPlace: props,
       activeMarker: selected,
       companyName: companyName,
       isShowInfoWindow: true,
@@ -59,6 +81,19 @@ export default class Map extends React.Component<Props, State> {
   }
 
   componentDidMount() {
+    if (this.props.params.companyName) {
+      this.setState({
+        filteredShop: this.props.params.companyName,
+      });
+    }
+    if (this.props.params.shopId) {
+      this.setState({
+        activeMarker: Number(this.props.params.shopId),
+        isShowInfoWindow: true,
+        companyName: this.props.params.companyName,
+      });
+    }
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
         this.setState({
@@ -70,10 +105,11 @@ export default class Map extends React.Component<Props, State> {
       (error) => this.setState({ error: error.message }),
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
     );
+    console.error(this.state.error);
   }
 
   render() {
-    const MyMapComponent: any = compose(
+    const MyMapComponent: Function = compose(
       withProps({
         googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${apiKey}`,
         loadingElement: <div style={{ height: `100%` }} />,
@@ -82,21 +118,21 @@ export default class Map extends React.Component<Props, State> {
       }),
       withScriptjs,
       withGoogleMap
-    )((props: any) => (
+    )(() => (
       <div>
         <GoogleMap
           defaultZoom={10}
           defaultCenter={{ lat: initialLat, lng: initialLng }}
           center={{ lat: this.state.lat, lng: this.state.lng }}
         >
-          {shops.map((shop: any) => {
-            return shop.shopObj.map((shopData: any, index: number) => {
+          {shops.map((shop) => {
+            return shop.shopObj.map((shopData, index: number) => {
               return (
                 <Marker
+                  key={index}
                   position={{ lat: shopData.lat, lng: shopData.lng }}
                   onClick={(e) =>
-                    this.onMarkerClick(
-                      this.props,
+                    this.showSelectedShop(
                       index,
                       shop.companyName,
                       shopData.lat,
@@ -104,9 +140,9 @@ export default class Map extends React.Component<Props, State> {
                     )
                   }
                   visible={
-                    this.props.filteredShops === "All shops" ||
-                    (this.props.filteredShops !== "All shops" &&
-                      this.props.filteredShops === shop.companyName)
+                    this.state.filteredShop === "All-shops" ||
+                    (this.state.filteredShop !== "All-shops" &&
+                      this.state.filteredShop === shop.companyName)
                       ? true
                       : false
                   }
@@ -115,7 +151,7 @@ export default class Map extends React.Component<Props, State> {
                   {index === this.state.activeMarker &&
                     this.state.isShowInfoWindow &&
                     this.state.companyName === shop.companyName && (
-                      <InfoWindow>
+                      <InfoWindow defaultZIndex={1}>
                         <div>
                           <b>
                             <span>{shopData.shop_name}</span>
@@ -140,8 +176,8 @@ export default class Map extends React.Component<Props, State> {
           />
           <Circle
             defaultCenter={{
-              lat: parseFloat(this.state.currentLocationLat),
-              lng: parseFloat(this.state.currentLocationLng),
+              lat: this.state.currentLocationLat,
+              lng: this.state.currentLocationLng,
             }}
             visible={this.state.isShowCurrentLocation}
             radius={5000}

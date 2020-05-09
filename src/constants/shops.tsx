@@ -6,29 +6,48 @@ import ChunShuiTangIcon from "../images/ChunShuiTangIcon.png";
 import chatimeIcon from "../images/chatimeIcon.png";
 import commerce from "../images/commerce.png";
 
-export const shops = [
+export type shopObjType = Array<{
+  lat: number;
+  lng: number;
+  shop_name: string;
+  address: string;
+}>;
+
+const chatimeObj: shopObjType = chatime;
+const GongChaObj: shopObjType = GongCha;
+const ChunShuiTangObj: shopObjType = ChunShuiTang;
+
+export type shopsType = Array<{
+  shopObj: shopObjType;
+  icon: string;
+  companyName: string;
+  numberOfShops: number;
+}>;
+
+export const shops: shopsType = [
   {
     shopObj: [],
     icon: commerce,
-    companyName: "All shops",
-    numberOfShops: chatime.length + GongCha.length + ChunShuiTang.length,
+    companyName: "All-shops",
+    numberOfShops:
+      chatimeObj.length + GongChaObj.length + ChunShuiTangObj.length,
   },
   {
-    shopObj: chatime,
+    shopObj: chatimeObj,
     icon: chatimeIcon,
     companyName: "chatime",
-    numberOfShops: chatime.length,
+    numberOfShops: chatimeObj.length,
   },
   {
-    shopObj: GongCha,
+    shopObj: GongChaObj,
     icon: GongChaIcon,
     companyName: "GongCha",
-    numberOfShops: GongCha.length,
+    numberOfShops: GongChaObj.length,
   },
   {
-    shopObj: ChunShuiTang,
+    shopObj: ChunShuiTangObj,
     icon: ChunShuiTangIcon,
     companyName: "ChunShuiTang",
-    numberOfShops: ChunShuiTang.length,
+    numberOfShops: ChunShuiTangObj.length,
   },
 ];

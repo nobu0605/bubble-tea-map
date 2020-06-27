@@ -86,7 +86,7 @@ export default class Map extends React.Component<Props, State> {
       companyName: companyName,
       isShowInfoWindow: true,
       lat: lat - adjustLatitude,
-      lng: lng,
+      lng: lng - 3,
     });
   }
 

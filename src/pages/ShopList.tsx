@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { shops } from "../constants/shops";
 import search from "../images/search.svg";
 import { RouteComponentProps } from "react-router-dom";
+import { validateAddress } from "../utils/validation";
 
 interface Props extends RouteComponentProps<{}> {}
 type State = {
@@ -21,6 +22,10 @@ export default class ShopList extends React.Component<Props, State> {
 
   filterList(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
+    const isCorrectAddress = validateAddress(e.target.value, 100);
+    if (!isCorrectAddress) {
+      return alert("Please input an address within 100 characters.");
+    }
     this.setState({ filteredAddress: e.target.value });
   }
 

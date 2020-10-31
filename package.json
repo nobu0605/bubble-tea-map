@@ -19,6 +19,7 @@
     "@types/react-router-dom": "^5.1.5",
     "@types/recompose": "^0.30.7",
     "@types/styled-components": "^5.1.0",
+    "jest": "^24.9.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-ga": "^2.7.0",

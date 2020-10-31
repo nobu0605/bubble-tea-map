@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { shops } from "../constants/shops";
 import search from "../images/search.svg";
 import { RouteComponentProps } from "react-router-dom";
-import { validateAddress, isEmpty } from "../utils/validation.js";
+import { validateAddress, isEmpty } from "../utils/validation";
 
 interface Props extends RouteComponentProps<{}> {}
 type State = {

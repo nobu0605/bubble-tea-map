@@ -8,7 +8,6 @@ import {
   InfoWindow,
   Circle,
 } from "react-google-maps";
-import { apiKey } from "../config";
 import { shops } from "../constants/shops";
 import currentLocation from "../images/currentLocation.png";
 import Fab from "@material-ui/core/Fab";
@@ -108,7 +107,7 @@ export default class Map extends React.Component<Props, State> {
   render() {
     const MyMapComponent: Function = compose(
       withProps({
-        googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${apiKey}`,
+        googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAP_API_KEY}`,
         loadingElement: <div style={{ height: `100%` }} />,
         containerElement: <div style={{ height: `800px` }} />,
         mapElement: <div style={{ height: `100%` }} />,

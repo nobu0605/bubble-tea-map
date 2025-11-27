@@ -25,7 +25,7 @@
     "react-ga": "^2.7.0",
     "react-geocode": "^0.2.1",
     "react-google-maps": "^9.4.5",
-    "react-scripts": "3.4.1",
+    "react-scripts": "5.0.1",
     "recompose": "^0.30.0",
     "styled-components": "^5.1.0",
     "typescript": "~3.7.2"
